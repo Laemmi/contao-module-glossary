@@ -1,5 +1,13 @@
 <?php
 
+use Contao\Controller;
+use Contao\DataContainer;
+use Contao\BackendUser;
+use Contao\Image;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\Versions;
+
 $this->loadLanguageFile('tl_content');
 
 /**
@@ -7,7 +15,7 @@ $this->loadLanguageFile('tl_content');
  */
 $GLOBALS['TL_DCA']['tl_glossary_term'] = [
     // Config
-    'config' => ['dataContainer' => 'Table',
+    'config' => ['dataContainer' => \Contao\DC_Table::class,
         'ptable' => 'tl_glossary',
         'enableVersioning' => true,
         'sql' => ['keys' => ['id' => 'primary', 'pid' => 'index']]],
@@ -18,16 +26,16 @@ $GLOBALS['TL_DCA']['tl_glossary_term'] = [
     // Subpalettes
     'subpalettes' => ['addImage' => 'singleSRC,alt,size,imagemargin,imageUrl,fullsize,caption,floating', 'addEnclosure' => 'enclosure'],
     // Fields
-    'fields' => ['id' => ['sql' => "int(10) unsigned NOT NULL auto_increment"], 'pid' => ['foreignKey' => 'tl_glossary.title', 'sql' => "int(10) unsigned NOT NULL default '0'", 'relation' => ['type' => 'belongsTo', 'load' => 'eager']], 'tstamp' => ['sql' => "int(10) unsigned NOT NULL default '0'"], 'term' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['term'], 'exclude' => true, 'search' => true, 'flag' => 1, 'inputType' => 'text', 'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'glossarytype' => ['label' => ($GLOBALS['TL_LANG']['tl_glossary_term']['glossarytype'] ?? null), 'exclude' => true, 'inputType' => 'select', 'options' => ['dfn' => ($GLOBALS['TL_LANG']['glossarylinks']['dfn'] ?? null), 'abbr' => ($GLOBALS['TL_LANG']['glossarylinks']['abbr'] ?? null)], 'eval' => ['tl_class' => 'w50'], 'sql' => "varchar(32) NOT NULL default ''"], 'author' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['author'], 'default' => \BackendUser::getInstance()->id, 'exclude' => true, 'search' => true, 'inputType' => 'select', 'foreignKey' => 'tl_user.name', 'eval' => ['doNotCopy' => true, 'mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'], 'sql' => "int(10) unsigned NOT NULL default '0'"], 'definition' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['definition'], 'exclude' => true, 'search' => true, 'inputType' => 'textarea', 'eval' => ['mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true], 'explanation' => 'insertTags', 'sql' => "text NULL"], 'addImage' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['addImage'], 'exclude' => true, 'inputType' => 'checkbox', 'eval' => ['submitOnChange' => true], 'sql' => "char(1) NOT NULL default ''"], 'singleSRC' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'], 'exclude' => true, 'inputType' => 'fileTree', 'eval' => ['filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => true, 'tl_class' => 'clr'], 'sql' => "binary(16) NULL"], 'alt' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['alt'], 'exclude' => true, 'inputType' => 'text', 'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'long'], 'sql' => "varchar(255) NOT NULL default ''"], 'size' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['size'], 'exclude' => true, 'inputType' => 'imageSize', 'options' => ['crop', 'proportional', 'box'], 'reference' => &$GLOBALS['TL_LANG']['MSC'], 'eval' => ['rgxp' => 'digit', 'nospace' => true, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'imagemargin' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'], 'exclude' => true, 'inputType' => 'trbl', 'options' => ['px', '%', 'em', 'pt', 'pc', 'in', 'cm', 'mm'], 'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'imageUrl' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'], 'exclude' => true, 'search' => true, 'inputType' => 'text', 'eval' => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50 wizard'], 'wizard' => [['tl_glossary_term', 'pagePicker']], 'sql' => "varchar(255) NOT NULL default ''"], 'fullsize' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['fullsize'], 'exclude' => true, 'inputType' => 'checkbox', 'eval' => ['tl_class' => 'w50 m12'], 'sql' => "char(1) NOT NULL default ''"], 'caption' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['caption'], 'exclude' => true, 'search' => true, 'inputType' => 'text', 'eval' => ['maxlength' => 255, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'floating' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['floating'], 'exclude' => true, 'inputType' => 'radioTable', 'options' => ['above', 'left', 'right', 'below'], 'eval' => ['cols' => 4, 'tl_class' => 'w50'], 'reference' => &$GLOBALS['TL_LANG']['MSC'], 'sql' => "varchar(32) NOT NULL default ''"], 'addEnclosure' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['addEnclosure'], 'exclude' => true, 'inputType' => 'checkbox', 'eval' => ['submitOnChange' => true], 'sql' => "char(1) NOT NULL default ''"], 'enclosure' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['enclosure'], 'exclude' => true, 'inputType' => 'fileTree', 'eval' => ['filesOnly' => true, 'fieldType' => 'checkbox', 'multiple' => true, 'mandatory' => true, 'tl_class' => 'clr'], 'sql' => "blob NULL"], 'published' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['published'], 'exclude' => true, 'filter' => true, 'flag' => 2, 'inputType' => 'checkbox', 'eval' => ['doNotCopy' => true], 'sql' => "char(1) NOT NULL default ''"]],
+    'fields' => ['id' => ['sql' => "int(10) unsigned NOT NULL auto_increment"], 'pid' => ['foreignKey' => 'tl_glossary.title', 'sql' => "int(10) unsigned NOT NULL default '0'", 'relation' => ['type' => 'belongsTo', 'load' => 'eager']], 'tstamp' => ['sql' => "int(10) unsigned NOT NULL default '0'"], 'term' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['term'], 'exclude' => true, 'search' => true, 'flag' => 1, 'inputType' => 'text', 'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'glossarytype' => ['label' => ($GLOBALS['TL_LANG']['tl_glossary_term']['glossarytype'] ?? null), 'exclude' => true, 'inputType' => 'select', 'options' => ['dfn' => ($GLOBALS['TL_LANG']['glossarylinks']['dfn'] ?? null), 'abbr' => ($GLOBALS['TL_LANG']['glossarylinks']['abbr'] ?? null)], 'eval' => ['tl_class' => 'w50'], 'sql' => "varchar(32) NOT NULL default ''"], 'author' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['author'], 'default' => \Contao\BackendUser::getInstance()->id, 'exclude' => true, 'search' => true, 'inputType' => 'select', 'foreignKey' => 'tl_user.name', 'eval' => ['doNotCopy' => true, 'mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'], 'sql' => "int(10) unsigned NOT NULL default '0'"], 'definition' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['definition'], 'exclude' => true, 'search' => true, 'inputType' => 'textarea', 'eval' => ['mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true], 'explanation' => 'insertTags', 'sql' => "text NULL"], 'addImage' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['addImage'], 'exclude' => true, 'inputType' => 'checkbox', 'eval' => ['submitOnChange' => true], 'sql' => "char(1) NOT NULL default ''"], 'singleSRC' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['singleSRC'], 'exclude' => true, 'inputType' => 'fileTree', 'eval' => ['filesOnly' => true, 'fieldType' => 'radio', 'mandatory' => true, 'tl_class' => 'clr'], 'sql' => "binary(16) NULL"], 'alt' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['alt'], 'exclude' => true, 'inputType' => 'text', 'eval' => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'long'], 'sql' => "varchar(255) NOT NULL default ''"], 'size' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['size'], 'exclude' => true, 'inputType' => 'imageSize', 'options' => ['crop', 'proportional', 'box'], 'reference' => &$GLOBALS['TL_LANG']['MSC'], 'eval' => ['rgxp' => 'digit', 'nospace' => true, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'imagemargin' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['imagemargin'], 'exclude' => true, 'inputType' => 'trbl', 'options' => ['px', '%', 'em', 'pt', 'pc', 'in', 'cm', 'mm'], 'eval' => ['includeBlankOption' => true, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'imageUrl' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['imageUrl'], 'exclude' => true, 'search' => true, 'inputType' => 'text', 'eval' => ['rgxp' => 'url', 'decodeEntities' => true, 'maxlength' => 255, 'tl_class' => 'w50 wizard'], 'wizard' => [['tl_glossary_term', 'pagePicker']], 'sql' => "varchar(255) NOT NULL default ''"], 'fullsize' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['fullsize'], 'exclude' => true, 'inputType' => 'checkbox', 'eval' => ['tl_class' => 'w50 m12'], 'sql' => "char(1) NOT NULL default ''"], 'caption' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['caption'], 'exclude' => true, 'search' => true, 'inputType' => 'text', 'eval' => ['maxlength' => 255, 'tl_class' => 'w50'], 'sql' => "varchar(255) NOT NULL default ''"], 'floating' => ['label' => &$GLOBALS['TL_LANG']['tl_content']['floating'], 'exclude' => true, 'inputType' => 'radioTable', 'options' => ['above', 'left', 'right', 'below'], 'eval' => ['cols' => 4, 'tl_class' => 'w50'], 'reference' => &$GLOBALS['TL_LANG']['MSC'], 'sql' => "varchar(32) NOT NULL default ''"], 'addEnclosure' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['addEnclosure'], 'exclude' => true, 'inputType' => 'checkbox', 'eval' => ['submitOnChange' => true], 'sql' => "char(1) NOT NULL default ''"], 'enclosure' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['enclosure'], 'exclude' => true, 'inputType' => 'fileTree', 'eval' => ['filesOnly' => true, 'fieldType' => 'checkbox', 'multiple' => true, 'mandatory' => true, 'tl_class' => 'clr'], 'sql' => "blob NULL"], 'published' => ['label' => &$GLOBALS['TL_LANG']['tl_glossary_term']['published'], 'exclude' => true, 'filter' => true, 'flag' => 2, 'inputType' => 'checkbox', 'eval' => ['doNotCopy' => true], 'sql' => "char(1) NOT NULL default ''"]],
 ];
 
 
-class tl_glossary_term extends \Backend
+class tl_glossary_term extends \Contao\Backend
 {
     public function __construct()
     {
         parent::__construct();
-        $this->import('BackendUser', 'User');
+        $this->import(BackendUser::class, 'User');
     }
 
     /**
@@ -52,10 +60,10 @@ class tl_glossary_term extends \Backend
      * @return string
      * @internal param $object
      */
-    public function pagePicker(\DataContainer $dc)
+    public function pagePicker(DataContainer $dc)
     {
         $strField = 'ctrl_' . $dc->field . (($this->Input->get('act') == 'editAll') ? '_' . $dc->id : '');
-        return ' ' . \Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top; cursor:pointer;" onclick="Backend.pickPage(\'' . $strField . '\')"');
+        return ' ' . Image::getHtml('pickpage.gif', $GLOBALS['TL_LANG']['MSC']['pagepicker'], 'style="vertical-align:top; cursor:pointer;" onclick="Backend.pickPage(\'' . $strField . '\')"');
     }
 
     /**
@@ -70,7 +78,7 @@ class tl_glossary_term extends \Backend
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-        if (strlen((string)Input::get('tid'))) {
+        if (strlen((string) Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1));
             $this->redirect($this->getReferer());
         }
@@ -86,7 +94,7 @@ class tl_glossary_term extends \Backend
             $icon = 'invisible.gif';
         }
 
-        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . StringUtil::specialchars($title) . '"' . $attributes . '>' . Image::getHtml($icon, $label) . '</a> ';
     }
 
     /**
@@ -99,7 +107,7 @@ class tl_glossary_term extends \Backend
         // Check permissions to publish
         if (!$this->User->isAdmin && !$this->User->hasAccess('tl_glossary_term::published', 'alexf')) {
             $this->log('Not enough permissions to publish/unpublish Glossary-Term ID "' . $intId . '"', 'tl_glossary_term toggleVisibility', TL_ERROR);
-            $this->redirect('contao/main.php?act=error');
+            Controller::redirect('contao?act=error');
         }
 
         $objVersions = new Versions('tl_glossary_term', $intId);

@@ -11,7 +11,7 @@ use Laemmi\ContaoGlossaryBundle\Module\Listing;
 $GLOBALS['BE_MOD']['content']['glossary'] =
     [
     'tables' => ['tl_glossary', 'tl_glossary_term'],
-    'icon'   => 'system/modules/glossary/assets/icon.gif'
+    'icon'   => 'bundles/contaoglossary/assets/icon.gif'
     ];
 
 

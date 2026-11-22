@@ -2,6 +2,9 @@
 
 namespace Laemmi\ContaoGlossaryBundle;
 
+use Contao\Frontend;
+use Contao\FrontendTemplate;
+
 /**
  * Class GlossaryLinks - scrape the template content for glossar keywords and return the result.
  *
@@ -9,7 +12,7 @@ namespace Laemmi\ContaoGlossaryBundle;
  * @author      Christian Schiffler <c.schiffler@cyberspectrum.de>
  * @package     Controller
  */
-class Links extends \Frontend
+class Links extends Frontend
 {
     // Tags, in which no replacement will be done.
     private array $arrProtectedTags = [
@@ -138,7 +141,7 @@ class Links extends \Frontend
             ->execute($GLOBALS['objPage']->id, $GLOBALS['objPage']->id);
         if ($obj->numRows) {
             $lasttpl = 'glossarylinks_default';
-            $objTemplate = new \FrontendTemplate($lasttpl);
+            $objTemplate = new FrontendTemplate($lasttpl);
             while ($obj->next()) {
                 if (stripos((string) $strBuffer, trim((string) $obj->term)) !== false) {
                     $html = str_get_html($strBuffer);

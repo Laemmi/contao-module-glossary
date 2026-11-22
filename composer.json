@@ -2,8 +2,8 @@
   "name": "laemmi/contao-module-glossary",
   "description": "Glossary module for Contao WebCMS",
   "keywords": ["glossary"],
-  "type": "contao-module",
-  "license": "LGPL-3.0+",
+  "type": "contao-bundle",
+  "license": "LGPL-3.0-or-later",
   "authors": [
     {
       "name": "Christoph Wiechert",
@@ -20,7 +20,7 @@
   ],
   "require": {
     "php": "^8.1",
-    "contao/core-bundle": "^4.13"
+    "contao/core-bundle": "^5.3"
   },
   "require-dev": {
     "contao/manager-plugin": "^2.11",

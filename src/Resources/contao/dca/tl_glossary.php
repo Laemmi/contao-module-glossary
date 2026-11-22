@@ -7,7 +7,7 @@
 $GLOBALS['TL_DCA']['tl_glossary'] = [
     // Config
     'config' => [
-        'dataContainer' => 'Table',
+        'dataContainer' => \Contao\DC_Table::class,
         'ctable' => ['tl_glossary_term'],
         'switchToEdit' => true,
         'enableVersioning' => true,
